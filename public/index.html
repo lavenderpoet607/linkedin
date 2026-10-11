@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkedIn Profile Optimizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-theme="dark">
+  <div class="app-layout">
+    <header class="top-nav">
+      <div class="nav-brand">
+        <span class="brand-badge">PRO</span>
+        <span class="brand-title">Profile Optimizer</span>
+      </div>
+      <div class="nav-actions">
+        <button id="themeToggleBtn" class="btn btn-icon" aria-label="Toggle theme">
+          <span id="themeIcon">☀️</span>
+        </button>
+        <div id="accountPill" class="account-pill disconnected">
+          <span class="status-dot"></span>
+          <span id="accountStatusText">LinkedIn Disconnected</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="main-container">
+      <aside class="sidebar" role="navigation" aria-label="Main Navigation">
+        <nav class="nav-menu">
+          <button class="nav-tab active" data-tab="tab-overview">
+            <span class="tab-label">Dashboard Overview</span>
+          </button>
+          <button class="nav-tab" data-tab="tab-audit">
+            <span class="tab-label">Audit & Recommendations</span>
+          </button>
+          <button class="nav-tab" data-tab="tab-editor">
+            <span class="tab-label">Profile Editor & Preview</span>
+          </button>
+          <button class="nav-tab" data-tab="tab-variations">
+            <span class="tab-label">Career Angle Variations</span>
+          </button>
+          <button class="nav-tab" data-tab="tab-keywords">
+            <span class="tab-label">Keyword & ATS Analyzer</span>
+          </button>
+          <button class="nav-tab" data-tab="tab-automation">
+            <span class="tab-label">Automation & Queue</span>
+          </button>
+          <button class="nav-tab" data-tab="tab-logs">
+            <span class="tab-label">Activity & Sync Logs</span>
+          </button>
+          <button class="nav-tab" data-tab="tab-security">
+            <span class="tab-label">Security & Export</span>
+          </button>
+        </nav>
+      </aside>
+
+      <main class="content-area" id="mainContent">
+        <div id="notificationBanner" class="notification-banner hidden" role="alert">
+          <span id="notificationMessage"></span>
+          <button id="closeNotificationBtn" class="btn-close" aria-label="Close notification">&times;</button>
+        </div>
+
+        <section id="tab-overview" class="view-panel active">
+          <div class="panel-header">
+            <div>
+              <h1 class="panel-title">Profile Optimization Dashboard</h1>
+              <p class="panel-desc">Grounded optimization for professional LinkedIn profiles based on real user accomplishments.</p>
+            </div>
+            <div class="header-actions">
+              <button id="runAuditBtn" class="btn btn-primary">Run Fresh Audit</button>
+            </div>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <span class="metric-label">Completeness Score</span>
+              <div class="metric-value-row">
+                <span id="overviewCompleteness" class="metric-number">0%</span>
+                <span id="completenessBadge" class="badge badge-warning">Needs Data</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div id="overviewProgressBar" class="progress-bar-fill" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <span class="metric-label">Target Role</span>
+              <div class="metric-value-row">
+                <span id="overviewTargetRole" class="metric-text">Not specified</span>
+              </div>
+              <span id="overviewLanguage" class="sub-text">Language: Indonesian (id)</span>
+            </div>
+
+            <div class="metric-card">
+              <span class="metric-label">LinkedIn Account</span>
+              <div class="metric-value-row">
+                <span id="overviewAccountName" class="metric-text">Not Connected</span>
+              </div>
+              <span id="overviewAccountScope" class="sub-text">Permissions: None</span>
+            </div>
+
+            <div class="metric-card">
+              <span class="metric-label">Active Automation Tasks</span>
+              <div class="metric-value-row">
+                <span id="overviewActiveJobs" class="metric-number">3</span>
+                <span class="badge badge-success">Running</span>
+              </div>
+              <span class="sub-text">Audit, Freshness, Content</span>
+            </div>
+          </div>
+
+          <div class="card card-hero">
+            <div class="card-header">
+              <h2>Account Connection & API Scope Status</h2>
+            </div>
+            <div class="card-body">
+              <div id="accountConnectedBox" class="status-box hidden">
+                <div class="user-profile-row">
+                  <div id="userAvatar" class="avatar-placeholder">U</div>
+                  <div>
+                    <h3 id="connectedUserName">Member Name</h3>
+                    <p id="connectedUserEmail" class="sub-text">member@example.com</p>
+                    <p id="connectedUserExpiry" class="sub-text">Token valid until: Active</p>
+                  </div>
+                </div>
+                <div class="scopes-tag-row" id="connectedScopesList"></div>
+                <div id="integrationModeBox" class="integration-mode-box"></div>
+                <div class="guidance-callout">
+                  <strong>Official LinkedIn API Notice:</strong> LinkedIn Member API authorizes OpenID identity and social sharing (w_member_social). LinkedIn restricts automated programmatic mutation of member profile fields. Use our 1-click clipboard export to apply optimized sections in LinkedIn web.
+                </div>
+                <div class="btn-group">
+                  <button id="disconnectLinkedInBtn" class="btn btn-outline-danger">Disconnect Account</button>
+                </div>
+              </div>
+
+              <div id="accountDisconnectedBox" class="status-box">
+                <p>Connect your LinkedIn account via official OAuth 2.0 to verify identity, check scopes, and enable social share drafts.</p>
+                <div id="disconnectedIntegrationModeBox" class="integration-mode-box"></div>
+                <div class="scopes-list">
+                  <span class="scope-tag">openid (Identity)</span>
+                  <span class="scope-tag">profile (Name & Picture)</span>
+                  <span class="scope-tag">email (Verified Email)</span>
+                  <span class="scope-tag">w_member_social (Post Drafts)</span>
+                </div>
+                <button id="connectLinkedInBtn" class="btn btn-primary btn-large">Connect with LinkedIn</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Profile Freshness Reminders</h2>
+            </div>
+            <div class="card-body">
+              <div id="freshnessRemindersList" class="reminders-list">
+                <div class="empty-state">No pending reminders. Profile is current.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-audit" class="view-panel">
+          <div class="panel-header">
+            <div>
+              <h1 class="panel-title">Grounded Profile Audit</h1>
+              <p class="panel-desc">Evidence-based assessment of headline, summary, work history, and keyword consistency.</p>
+            </div>
+            <button id="recheckAuditBtn" class="btn btn-primary">Refresh Audit</button>
+          </div>
+
+          <div class="audit-summary-row">
+            <div class="summary-pill">
+              <span class="pill-title">Score</span>
+              <span id="auditScoreVal" class="pill-val">0 / 100</span>
+            </div>
+            <div class="summary-pill">
+              <span class="pill-title">Identified Items</span>
+              <span id="auditIssuesCount" class="pill-val">0</span>
+            </div>
+            <div class="summary-pill">
+              <span class="pill-title">Slop Buzzwords Found</span>
+              <span id="auditBuzzwordsCount" class="pill-val">0</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Detected Issues & Opportunities</h2>
+            </div>
+            <div class="card-body">
+              <div id="auditIssuesList" class="issues-container">
+                <div class="empty-state">Click Refresh Audit to evaluate your profile data.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Actionable Recommendations</h2>
+            </div>
+            <div class="card-body">
+              <ul id="auditRecommendationsList" class="recommendations-list">
+                <li class="empty-state">No recommendations pending.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>AI Prioritized Recommendations & Rationales</h2>
+            </div>
+            <div class="card-body">
+              <div id="aiRecommendationsList" class="recommendations-container">
+                <div class="empty-state">No AI recommendations generated yet. Run audit to evaluate.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-editor" class="view-panel">
+          <div class="panel-header">
+            <div>
+              <h1 class="panel-title">Profile Editor & Preview</h1>
+              <p class="panel-desc">Edit profile sections with side-by-side preview and local revision snapshots.</p>
+            </div>
+            <div class="header-actions">
+              <button id="saveProfileBtn" class="btn btn-primary">Save Changes</button>
+            </div>
+          </div>
+
+          <div class="editor-layout">
+            <div class="editor-col">
+              <div class="card">
+                <div class="card-header">
+                  <h3>Targeting Preferences</h3>
+                </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="editTargetRole">Target Career Role</label>
+                    <input type="text" id="editTargetRole" class="form-control" placeholder="e.g. Senior Backend Engineer">
+                  </div>
+                  <div class="form-group">
+                    <label for="editTargetIndustry">Industry / Domain</label>
+                    <input type="text" id="editTargetIndustry" class="form-control" placeholder="e.g. Financial Technology">
+                  </div>
+                  <div class="form-group">
+                    <label for="editLanguage">Language</label>
+                    <select id="editLanguage" class="form-control">
+                      <option value="id">Indonesian (id)</option>
+                      <option value="en">English (en)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <h3>Headline</h3>
+                  <button id="autoGenerateHeadlineBtn" class="btn btn-small btn-secondary">Generate Options</button>
+                </div>
+                <div class="card-body">
+                  <textarea id="editHeadline" class="form-control" rows="3" maxlength="220" placeholder="Role | Specialization | Core Engineering Value"></textarea>
+                  <div class="char-count"><span id="headlineCharCount">0</span> / 220</div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <h3>About / Summary</h3>
+                  <button id="autoGenerateAboutBtn" class="btn btn-small btn-secondary">Draft Grounded Summary</button>
+                </div>
+                <div class="card-body">
+                  <textarea id="editAbout" class="form-control" rows="8" maxlength="2600" placeholder="Narrative of background, technical stack, key projects, and professional focus..."></textarea>
+                  <div class="char-count"><span id="aboutCharCount">0</span> / 2600</div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <h3>Skills</h3>
+                  <span class="badge badge-secondary" id="skillsCountBadge">0 Skills</span>
+                </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="editSkillsInput">Comma-separated skills (or click choices below)</label>
+                    <input type="text" id="editSkillsInput" class="form-control" placeholder="TypeScript, Flutter, Node.js, PostgreSQL, Docker">
+                  </div>
+
+                  <div class="skills-picker-wrapper">
+                    <div class="skills-picker-header">
+                      <span class="skills-picker-title">Pilihan Skill Populer & Relevan</span>
+                      <div class="skills-category-tabs" id="skillCategoryTabs">
+                        <button type="button" class="skill-cat-btn active" data-cat="all">All</button>
+                        <button type="button" class="skill-cat-btn" data-cat="mobile">Mobile</button>
+                        <button type="button" class="skill-cat-btn" data-cat="frontend">Frontend & Lang</button>
+                        <button type="button" class="skill-cat-btn" data-cat="backend">Backend & API</button>
+                        <button type="button" class="skill-cat-btn" data-cat="database">Database</button>
+                        <button type="button" class="skill-cat-btn" data-cat="devops">DevOps & Cloud</button>
+                        <button type="button" class="skill-cat-btn" data-cat="architecture">Architecture</button>
+                      </div>
+                    </div>
+
+                    <div class="skills-quick-filter-row">
+                      <input type="text" id="skillSearchFilter" class="form-control skill-search-input" placeholder="Cari skill (misal: Flutter, TypeScript, Docker)...">
+                      <button type="button" id="clearAllSkillsBtn" class="btn btn-small btn-secondary">Clear</button>
+                    </div>
+
+                    <div class="skills-chips-grid" id="skillsChipsContainer"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <h3>Experience (Current & Past Roles)</h3>
+                  <div class="header-actions" style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+                    <button type="button" id="autoGenerateExpBtn" class="btn btn-small btn-primary">✨ Auto-Generate Role</button>
+                    <button type="button" id="openRoleTemplatesBtn" class="btn btn-small btn-outline">📋 Pilih Template</button>
+                    <button type="button" id="addExperienceBtn" class="btn btn-small btn-secondary">+ Add Blank</button>
+                  </div>
+                </div>
+                <div class="card-body" id="experienceListContainer"></div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <h3>Contact Information</h3>
+                </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="editContactEmail">Email</label>
+                    <input type="email" id="editContactEmail" class="form-control" placeholder="engineer@domain.com">
+                  </div>
+                  <div class="form-group">
+                    <label for="editPortfolioUrl">Portfolio / GitHub URL</label>
+                    <input type="url" id="editPortfolioUrl" class="form-control" placeholder="https://github.com/username">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="preview-col">
+              <div class="card preview-card">
+                <div class="card-header">
+                  <h3>Live LinkedIn Preview</h3>
+                  <div class="preview-actions">
+                    <button id="copyHeadlineBtn" class="btn btn-small btn-outline">Copy Headline</button>
+                    <button id="copyAboutBtn" class="btn btn-small btn-outline">Copy About</button>
+                  </div>
+                </div>
+                <div class="card-body linkedin-mockup">
+                  <div class="mockup-header-bg"></div>
+                  <div class="mockup-intro-row">
+                    <div class="mockup-avatar" id="mockupAvatar">U</div>
+                    <div class="mockup-intro-text">
+                      <h4 id="previewName">Your Name</h4>
+                      <p id="previewHeadline" class="mockup-headline">Headline will appear here</p>
+                      <p id="previewContact" class="mockup-contact">Location &bull; Contact Info</p>
+                    </div>
+                  </div>
+
+                  <div class="mockup-section">
+                    <h5 class="mockup-section-title">About</h5>
+                    <div id="previewAbout" class="mockup-about-text">About summary will appear here</div>
+                  </div>
+
+                  <div class="mockup-section">
+                    <h5 class="mockup-section-title">Experience</h5>
+                    <div id="previewExperience" class="mockup-exp-list">No experience added yet</div>
+                  </div>
+
+                  <div class="mockup-section">
+                    <h5 class="mockup-section-title">Skills</h5>
+                    <div id="previewSkills" class="mockup-skills-cloud">No skills added yet</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <h3>Revision History & Undo</h3>
+                </div>
+                <div class="card-body">
+                  <div id="revisionsList" class="revisions-list">
+                    <div class="empty-state">No revisions saved yet.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-variations" class="view-panel">
+          <div class="panel-header">
+            <div>
+              <h1 class="panel-title">Career Angle Variations</h1>
+              <p class="panel-desc">Three grounded positioning angles tailored to technical depth, product impact, and team leadership.</p>
+            </div>
+            <button id="refreshVariationsBtn" class="btn btn-primary">Regenerate Angles</button>
+          </div>
+
+          <div class="variations-grid" id="variationsContainer">
+            <div class="empty-state">Loading variations based on your profile facts...</div>
+          </div>
+        </section>
+
+        <section id="tab-keywords" class="view-panel">
+          <div class="panel-header">
+            <div>
+              <h1 class="panel-title">Keyword & ATS Relevance Analyzer</h1>
+              <p class="panel-desc">Analyze keyword frequency, readability ease, missing competencies, and alignment with target job specs.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Compare Profile Against Job Description (Optional)</h3>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label for="jobDescriptionInput">Paste Target Job Description</label>
+                <textarea id="jobDescriptionInput" class="form-control" rows="4" placeholder="Paste the text of a job posting to measure keyword matching..."></textarea>
+              </div>
+              <button id="analyzeKeywordsBtn" class="btn btn-primary">Analyze Profile Keywords</button>
+            </div>
+          </div>
+
+          <div id="keywordResultsPanel" class="results-panel hidden">
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <span class="metric-label">ATS Relevance Score</span>
+                <span id="kwAtsScore" class="metric-number">0%</span>
+                <span class="sub-text">Based on taxonomy alignment</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Job Match Score</span>
+                <span id="kwJobMatchScore" class="metric-number">N/A</span>
+                <span class="sub-text">Direct keyword coverage</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Flesch Readability</span>
+                <span id="kwReadabilityScore" class="metric-number">0</span>
+                <span id="kwReadabilityLabel" class="sub-text">Evaluation</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Average Sentence Length</span>
+                <span id="kwAvgSentenceLength" class="metric-number">0</span>
+                <span class="sub-text">Words per sentence</span>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3>Matched vs Missing Keywords</h3>
+              </div>
+              <div class="card-body">
+                <div class="keyword-columns">
+                  <div>
+                    <h4 class="col-heading text-success">Matched Keywords in Profile</h4>
+                    <div id="matchedKeywordsList" class="tag-cloud"></div>
+                  </div>
+                  <div>
+                    <h4 class="col-heading text-warning">Recommended Missing Keywords</h4>
+                    <div id="missingKeywordsList" class="tag-cloud"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3>Keyword Frequency & Density</h3>
+              </div>
+              <div class="card-body">
+                <div id="keywordDensityTable" class="table-responsive"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-automation" class="view-panel">
+          <div class="panel-header">
+            <div>
+              <h1 class="panel-title">Automation Settings & Approval Queue</h1>
+              <p class="panel-desc">Configured background tasks, content drafting, and explicit approval before any external action.</p>
+            </div>
+            <button id="generatePostDraftBtn" class="btn btn-primary">+ Generate Post Draft</button>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Automated Tasks</h2>
+            </div>
+            <div class="card-body">
+              <div id="automationJobsList" class="jobs-list">
+                <div class="empty-state">Loading automation jobs...</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Content Post Drafts & Approval Queue</h2>
+            </div>
+            <div class="card-body">
+              <div class="guidance-callout">
+                <strong>Explicit Consent Guard:</strong> No post is ever submitted to LinkedIn automatically. You must inspect the text and click Approve or Publish to LinkedIn.
+              </div>
+              <div id="draftsQueueList" class="drafts-queue">
+                <div class="empty-state">No post drafts generated yet. Click Generate Post Draft above.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-logs" class="view-panel">
+          <div class="panel-header">
+            <div>
+              <h1 class="panel-title">Activity & Synchronization Logs</h1>
+              <p class="panel-desc">Transparent audit trail of all profile modifications, OAuth state events, and automated tasks.</p>
+            </div>
+            <button id="refreshLogsBtn" class="btn btn-secondary">Refresh Logs</button>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Timestamp</th>
+                      <th>Action</th>
+                      <th>Status</th>
+                      <th>Details</th>
+                    </tr>
+                  </thead>
+                  <tbody id="activityLogsTableBody">
+                    <tr><td colspan="4" class="empty-state">Loading logs...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-security" class="view-panel">
+          <div class="panel-header">
+            <div>
+              <h1 class="panel-title">Security Settings & Profile Export</h1>
+              <p class="panel-desc">Manage OAuth credentials, export profile content in multiple formats, or purge all stored data.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>LinkedIn Developer Credentials & Portal Guide</h2>
+            </div>
+            <div class="card-body">
+              <div class="guidance-callout">
+                <strong>Formulir Pembuatan Aplikasi LinkedIn Developer:</strong>
+                Gunakan nilai di bawah ini saat mengisi formulir di <a href="https://www.linkedin.com/developers/apps" target="_blank" rel="noopener noreferrer">LinkedIn Developer Portal</a>:
+                <ul style="margin: 0.5rem 0 0 1.25rem; font-size: 0.85rem;">
+                  <li><strong>App Name:</strong> Profile Optimizer Dev</li>
+                  <li><strong>LinkedIn Page:</strong> Tautkan ke LinkedIn Page perusahaan/organisasi yang Anda kelola</li>
+                  <li><strong>Products:</strong> Tambahkan <em>Sign In with LinkedIn using OpenID Connect</em> dan <em>Share on LinkedIn</em></li>
+                  <li><strong>Authorized Redirect URL:</strong> <code>http://localhost:3000/auth/linkedin/callback</code></li>
+                </ul>
+              </div>
+
+              <div class="form-group" style="margin-top: 1rem;">
+                <label for="settingsClientId">LinkedIn Client ID</label>
+                <input type="text" id="settingsClientId" class="form-control" placeholder="Contoh: 78abc123def456">
+              </div>
+
+              <div class="form-group">
+                <label for="settingsClientSecret">LinkedIn Client Secret</label>
+                <input type="password" id="settingsClientSecret" class="form-control" placeholder="Masukkan Client Secret dari tab Auth">
+                <span id="secretStatusHint" class="sub-text">Status: Belum tersimpan</span>
+              </div>
+
+              <div class="btn-group" style="margin-top: 1rem;">
+                <button id="saveCredentialsBtn" class="btn btn-primary">Simpan Kredensial ke .env</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Export Optimized Profile</h2>
+            </div>
+            <div class="card-body">
+              <p>Download your verified, grounded profile content to apply to LinkedIn:</p>
+              <div class="export-btn-group">
+                <a href="/api/export/markdown" class="btn btn-outline" download="linkedin-profile-optimized.md">Export Markdown (.md)</a>
+                <a href="/api/export/text" class="btn btn-outline" download="linkedin-profile-optimized.txt">Export Plain Text (.txt)</a>
+                <a href="/api/export/json" class="btn btn-outline" download="linkedin-profile-optimized.json">Export JSON (.json)</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="card card-danger">
+            <div class="card-header">
+              <h2>Disconnect & Data Purge Controls</h2>
+            </div>
+            <div class="card-body">
+              <p>Revoke OAuth access, erase stored access tokens, and permanently delete all local revisions, drafts, and profile data.</p>
+              <div class="btn-group">
+                <button id="disconnectAccountBtn" class="btn btn-outline-danger">Disconnect LinkedIn Account</button>
+                <button id="purgeDataBtn" class="btn btn-danger">Purge All User Data</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <h3 id="modalTitle">Confirm Action</h3>
+      <p id="modalBody">Are you sure you want to proceed?</p>
+      <div class="modal-actions">
+        <button id="modalCancelBtn" class="btn btn-secondary">Cancel</button>
+        <button id="modalConfirmBtn" class="btn btn-danger">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="roleTemplatesModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="roleTemplatesModalTitle">
+    <div class="modal-box modal-large">
+      <div class="modal-header-row">
+        <div>
+          <h3 id="roleTemplatesModalTitle" style="margin: 0; font-size: 1.1rem; color: var(--text-primary);">Pilih Template Pengalaman Kerja Sesuai Profesi</h3>
+          <span style="font-size: 0.8rem; color: var(--text-secondary);">Pilih profesi untuk menambahkan riwayat kerja terstruktur lengkap dengan metrik pencapaian.</span>
+        </div>
+        <button type="button" id="closeRoleTemplatesModalBtn" class="btn-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body-scroll">
+        <div class="role-presets-grid" id="rolePresetsGrid"></div>
+      </div>
+      <div class="modal-actions" style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+        <button type="button" id="cancelRoleTemplatesModalBtn" class="btn btn-secondary">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

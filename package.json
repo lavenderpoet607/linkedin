@@ -1,0 +1,29 @@
+{
+  "name": "linkedin-profile-optimizer",
+  "version": "1.0.0",
+  "description": "Production-grade LinkedIn Profile Optimizer with OAuth 2.0 integration, grounded audits, keyword analysis, and automation queue",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "test": "node --test test/*.test.js",
+    "check-comments": "node --test test/noCommentsCheck.test.js",
+    "generate-secrets": "node src/utils/generateSecrets.js"
+  },
+  "keywords": [
+    "linkedin",
+    "profile-optimizer",
+    "oauth2",
+    "ats-analyzer"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^18.0.7",
+    "express": "^5.3.0",
+    "zod": "^4.6.5"
+  }
+}
